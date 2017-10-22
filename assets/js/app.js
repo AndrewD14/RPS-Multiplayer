@@ -16,13 +16,20 @@ var database = firebase.database();
 var player = "";
 var playerCount = 0;
 var userName = "";
+var disconnetRef = "";
+var activePlayerNum = 0;
 
 //updates the player count
 database.ref("/users").on("child_added", function(snapshot){
 	database.ref().once("value").then(function(snapshot2){
 		playerCount = 0; //resets since this is called for all childs when a page loads
-		for(i in snapshot2.val().users)
+		for(i in snapshot2.val().users){
 			playerCount++;
+			database.ref("/users/"+i).once("value").then(function(snapshot3){
+				activePlayerNum = snapshot3.val().player;
+				console.log(snapshot3.val().player)
+			});
+		}
 	});
 })
 
@@ -32,22 +39,28 @@ function addUser(name){
 	var key = "";
 
 	//adds player 1
-	if(playerCount == 0){
-		key = users.push({
-			userName: name,
-			player: 1
-		});
-	}
-	//adds player 2
-	else if(playerCount == 1){
-		key = users.push({
-			userName: name,
-			player: 2
-		});
+	if(playerCount == 0 || playerCount == 1){
+		if(activePlayerNum == 2 || activePlayerNum == 0){
+			key = users.push({
+				userName: name,
+				player: 1
+			});
+		}
+		//adds player 2
+		else if(activePlayerNum == 1){
+			key = users.push({
+				userName: name,
+				player: 2
+			});
+		}
 	}
 
 	//stores the player's key
 	player = key.key;
+
+	//disconnect event
+	if(player != "")
+		disconnetRef = database.ref("/users/"+player).onDisconnect().remove();
 }
 
 //click function for joining the game
@@ -56,8 +69,6 @@ function logIn(){
 	event.preventDefault();
 
 	userName = $("#userName").val().trim();
-	console.log(userName)
-
 	addUser(userName);
 
 	//removes the log in form
