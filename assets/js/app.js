@@ -29,12 +29,19 @@ database.ref("/users").on("child_added", function(snapshot){
 			database.ref("/users/"+i).once("value").then(function(snapshot3){
 				activePlayerNum = snapshot3.val().player;
 
+				var wins = snapshot3.val().wins;
+				var losses = snapshot3.val().losses;
+
 				//displays the player's name if others are active
 				if(activePlayerNum == 1){
 					$("#playerName1").html(snapshot3.val().userName);
+					$("#player1 #wins #win-totals").html(wins);
+					$("#player1 #losses #loss-totals").html(losses);
 				}
 				else if(activePlayerNum == 2){
 					$("#playerName2").html(snapshot3.val().userName);
+					$("#player2 #wins #win-totals").html(wins);
+					$("#player2 #losses #loss-totals").html(losses);
 				}
 			});
 		}
@@ -116,27 +123,15 @@ function displayCurrentPlayer(){
 		scissor.attr("data", "s");
 		scissor.addClass("choice");
 
-		var wins = $("<p>");
-		wins.html("<b>Wins: </b>"+snapshot2.val().wins);
-
-		var losses = $("<p>");
-		losses.html("<b>Losses: </b>"+snapshot2.val().losses);
-
 		if(playerNum == 1){
-			$("#playerName1").html(playerName);
 			$("#player1").append(rock);
 			$("#player1").append(paper);
 			$("#player1").append(scissor);
-			$("#player1").append(wins);
-			$("#player1").append(losses);
 		}
 		else if(playerNum == 2){
-			$("#playerName2").html(playerName);
 			$("#player2").append(rock);
 			$("#player2").append(paper);
 			$("#player2").append(scissor);
-			$("#player2").append(wins);
-			$("#player2").append(losses);
 		}
 	});
 }
