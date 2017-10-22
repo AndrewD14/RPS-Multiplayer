@@ -12,11 +12,16 @@
 	    <script type= "text/javascript" src= "assets/js/app.js"></script>
 	</head>
 	<body>
-		
+		<form id="join">
+			<label>Enter a username:</label>
+			<input type="text" id="userName"/>
+			<button type="submit" id="submit">Submit</button>
+		</form>
 
 		<script type="text/javascript">
-			//$(document).ready(function(){
-			//});
+			$(document).ready(function(){
+				$("#submit").on("click", logIn);
+			});
 		</script>
 	</body>
 </html>

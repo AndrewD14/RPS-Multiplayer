@@ -14,7 +14,8 @@ var database = firebase.database();
 
 //global variables
 var player = "";
-var playerCount;
+var playerCount = 0;
+var userName = "";
 
 //updates the player count
 database.ref("/users").on("child_added", function(snapshot){
@@ -26,21 +27,21 @@ database.ref("/users").on("child_added", function(snapshot){
 })
 
 //create user in firebase
-function addUser(){
+function addUser(name){
 	var users = database.ref("/users");
 	var key = "";
 
 	//adds player 1
 	if(playerCount == 0){
 		key = users.push({
-			userName: 1,
+			userName: name,
 			player: 1
 		});
 	}
 	//adds player 2
 	else if(playerCount == 1){
 		key = users.push({
-			userName: 1,
+			userName: name,
 			player: 2
 		});
 	}
@@ -49,3 +50,16 @@ function addUser(){
 	player = key.key;
 }
 
+//click function for joining the game
+function logIn(){
+	// prevent form from submitting with event.preventDefault() or returning false
+	event.preventDefault();
+
+	userName = $("#userName").val().trim();
+	console.log(userName)
+
+	addUser(userName);
+
+	//removes the log in form
+	$("#join").remove();
+}
