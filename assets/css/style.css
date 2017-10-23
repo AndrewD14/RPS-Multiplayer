@@ -1,0 +1,15 @@
+#greeting {
+	display: none;
+}
+
+#player1 p{
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 0;
+}
+
+#player2 p{
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 0;
+}

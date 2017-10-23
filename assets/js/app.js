@@ -119,6 +119,7 @@ function addUser(name){
 	if(player != ""){
 		disconnetRef = database.ref("/users/"+player).onDisconnect().remove();
 		displayCurrentPlayer();
+		$("#greeting").css("display", "flex");
 	}
 }
 
@@ -145,20 +146,26 @@ function displayCurrentPlayer(){
 		playerNum = snapshot2.val().player;
 		$("#playerNum").html(playerNum);
 
-		var rock = $("<p>");
+		var rock = $("<button>");
 		rock.html("Rock");
 		rock.attr("data", "rock");
 		rock.addClass("choice");
+		rock.addClass("alert alert-info");
+		rock.addClass("btn-block");
 
-		var paper = $("<p>");
+		var paper = $("<button>");
 		paper.html("Paper");
 		paper.attr("data", "paper");
 		paper.addClass("choice");
+		paper.addClass("alert alert-info");
+		paper.addClass("btn-block");
 
-		var scissor = $("<p>");
+		var scissor = $("<button>");
 		scissor.html("Scissor");
 		scissor.attr("data", "scissor");
 		scissor.addClass("choice");
+		scissor.addClass("alert alert-info");
+		scissor.addClass("btn-block");
 
 		//makes sures both sides are cleared
 		$("#player1 .choice, #choice").remove();
@@ -254,18 +261,20 @@ function determineWinner(p1, p2){
 	$("#player1 .choice, #choice").remove();
 	$("#player2 .choice, #choice").remove();
 
-	//displays what was picked
+	//displays what was picked for player 1
 	var picked = $("<h5>");
 	picked.attr("id", "choice");
 	picked.html(p1.choice);
 	$("#player1").prepend(picked);
 
+	//displays what was picked for player 2
 	var picked2 = $("<h5>");
 	picked2.attr("id", "choice");
 	picked2.html(p2.choice);
 	$("#player2").prepend(picked2)
 
 
+	//figures out who is the winner and loser
 	if(p1.choice === "rock"){
 		if(p2.choice === "paper"){
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
@@ -359,9 +368,8 @@ function updateWins(player, total, name){
 	$("#player"+player+" #wins #win-totals").html(total);
 
 	//shows the winner in the results
-	$("#results").html("<h4>"+name+"</h4><h4>WINS!</h4>");
+	$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h3>'+name+'</h3></div><div class="row justify-content-center"><h3>WINS!</h3></div></div>');
 }
-
 
 //update the html with the new loss totals
 function updateLosses(player, total){

@@ -5,7 +5,7 @@
 	    <title>RPS Multiplayer</title>
 	    
 	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-	    <!--<link rel="stylesheet" type = "text/css" href="assets/css/style.css">-->
+	    <link rel="stylesheet" type = "text/css" href="assets/css/style.css">
 
 	    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
@@ -13,37 +13,47 @@
 	</head>
 	<body>
 		<div class="container-fluid">
-			<form id="join">
-				<label>Enter a username:</label>
-				<input type="text" id="userName"/>
-				<button type="submit" id="submit">Submit</button>
-			</form>
 			<div class="row justify-content-center">
+				<div class="col-4">
+					<form id="join">
+						<div class="form-group">
+							<label>Enter a username:</label>
+							<input type="text" id="userName" class="form-control"/>
+							<button type="submit" id="submit" class="btn btn-primary">Submit</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="row justify-content-center" id="greeting">
 				<h3>Hello, <span id="name"></span>. You are player <span id="playerNum"></span>.</h3>
 			</div>
-			<div class="row">
-				<div class="col">
+			<div class="row justify-content-center">
+				<div class="col-3 ml-auto mr-auto border border-success">
 					<div class="row justify-content-center">
 						<h4 id="playerName1">Waiting for player 1</h4>
 					</div>
 					<div class="row justify-content-center">
 						<div id="player1">
-							<p id="wins"><b>Wins: </b><span id="win-totals"></span></p>
-							<p id="losses"><b>Losses: </b><span id="loss-totals"></span></p>
+							<div class="row">
+								<p id="wins"><b>Wins: </b><span id="win-totals"></span></p>
+								<p id="losses"><b>Losses: </b><span id="loss-totals"></span></p>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col">
-					<div id="results"></div>
+				<div class="col-3 ml-auto mr-auto border border-secondary">
+					<div id="results" class="row h-100"></div>
 				</div>
-				<div class="col">
+				<div class="col-3 ml-auto mr-auto border border-primary no-gutters">
 					<div class="row justify-content-center">
 						<h4 id="playerName2">Waiting for player 2</h4>
 					</div>
 					<div class="row justify-content-center">
 						<div id="player2">
-							<p id="wins"><b>Wins: </b><span id="win-totals"></span></p>
-							<p id="losses"><b>Losses: </b><span id="loss-totals"></span></p>
+							<div class="row">
+								<p id="wins"><b>Wins: </b><span id="win-totals"></span></p>
+								<p id="losses"><b>Losses: </b><span id="loss-totals"></span></p>
+							</div>
 						</div>
 					</div>
 				</div>
