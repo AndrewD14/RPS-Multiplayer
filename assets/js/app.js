@@ -15,7 +15,6 @@ var database = firebase.database();
 //global variables
 var player = "";
 var playerCount = 0;
-var userName = "";
 var disconnetRef = "";
 var activeOtherPlayerNum = 0;
 var waitForNextRound;
@@ -128,7 +127,7 @@ function logIn(){
 	// prevent form from submitting with event.preventDefault() or returning false
 	event.preventDefault();
 
-	userName = $("#userName").val().trim();
+	var userName = $("#userName").val().trim();
 	addUser(userName);
 
 	//removes the log in form
