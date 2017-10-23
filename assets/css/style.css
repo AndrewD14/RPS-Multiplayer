@@ -13,3 +13,13 @@
 	margin-right: 10px;
 	margin-bottom: 0;
 }
+
+#message-box {
+	background-color: white;
+	height: 5em;
+}
+
+.message {
+	width: 100%;
+	padding: 0;
+}

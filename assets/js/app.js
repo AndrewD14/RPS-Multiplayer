@@ -189,7 +189,7 @@ function selectChoice(){
 	var option = $(this).attr("data");
 	database.ref("/users/"+player+"/choice").set(option);
 
-	$(document.body).unbind("click", ".choices");
+	$(document.body).unbind("click", selectChoice);
 
 	database.ref("/users/"+player).once("value", function(snapshot){
 		if(snapshot.val().player == 1){
@@ -204,7 +204,6 @@ function selectChoice(){
 database.ref("turn").on("value", function(snapshot){
 	$("#results").empty();
 	if(snapshot.val() == 1){
-		$("#results").html("Waiting on player 1.");
 		$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h5>Waiting for player 1</h5></div></div>');
 
 		//activates the player 1's buttons
