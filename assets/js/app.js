@@ -195,7 +195,6 @@ function determineResults(){
 	//grabs the 2 player's choices
 	database.ref("/users").once("value", function(snapshot){
 		for(i in snapshot.val()){
-			console.log(i)
 			database.ref("/users/"+i).once("value").then(function(snapshot2){
 				if(snapshot2.val().player == 1){
 					p1.choice = snapshot2.val().choice;
@@ -215,26 +214,28 @@ function determineResults(){
 
 //determines the winner
 function determineWinner(p1, p2){
-	console.log(p1.key)
-	console.log(p2.key)
 	if(p1.choice === "rock"){
 		if(p2.choice === "paper"){
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/losses").set(snapshot.val().losses+1);
+				updateLosses(1, snapshot.val().losses+1);
 			});
 
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/wins").set(snapshot.val().wins+1);
+				updateWins(2, snapshot.val().wins+1);
 			});
 		}
 
 		if(p2.choice === "scissor"){
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/losses").set(snapshot.val().losses+1);
+				updateLosses(2, snapshot.val().losses+1);
 			});
 
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/wins").set(snapshot.val().wins+1);
+				updateWins(1, snapshot.val().wins+1);
 			});
 		}
 	}//player 1 chose rock
@@ -242,20 +243,24 @@ function determineWinner(p1, p2){
 		if(p2.choice === "scissor"){
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/losses").set(snapshot.val().losses+1);
+				updateLosses(1, snapshot.val().losses+1);
 			});
 
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/wins").set(snapshot.val().wins+1);
+				updateWins(2, snapshot.val().wins+1);
 			});
 		}
 
 		if(p2.choice === "rock"){
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/losses").set(snapshot.val().losses+1);
+				updateLosses(2, snapshot.val().losses+1);
 			});
 
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/wins").set(snapshot.val().wins+1);
+				updateWins(1, snapshot.val().wins+1);
 			});
 		}
 	}//player 1 chose paper
@@ -263,20 +268,24 @@ function determineWinner(p1, p2){
 		if(p2.choice === "rock"){
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/losses").set(snapshot.val().losses+1);
+				updateLosses(1, snapshot.val().losses+1);
 			});
 
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/wins").set(snapshot.val().wins+1);
+				updateWins(2, snapshot.val().wins+1);
 			});
 		}
 
 		if(p2.choice === "paper"){
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/losses").set(snapshot.val().losses+1);
+				updateLosses(2, snapshot.val().losses+1);
 			});
 
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/wins").set(snapshot.val().wins+1);
+				updateWins(1, snapshot.val().wins+1);
 			});
 		}
 	}//player 1 chose scissor
@@ -290,4 +299,15 @@ function determineWinner(p1, p2){
 			database.ref("turn").set(1);
 		},
 		4000);
+}
+
+//update the html with the new win totals
+function updateWins(player, total){
+	$("#player"+player+" #wins #win-totals").html(total);
+}
+
+
+//update the html with the new loss totals
+function updateLosses(player, total){
+	$("#player"+player+" #losses #loss-totals").html(total);
 }
