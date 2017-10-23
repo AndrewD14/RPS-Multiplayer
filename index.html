@@ -12,24 +12,43 @@
 	    <script type= "text/javascript" src= "assets/js/app.js"></script>
 	</head>
 	<body>
-		<form id="join">
-			<label>Enter a username:</label>
-			<input type="text" id="userName"/>
-			<button type="submit" id="submit">Submit</button>
-		</form>
-		<h3>Hello, <span id="name"></span>. You are player <span id="playerNum"></span>.</h3>
-		<div id="player1">
-			<h4 id="playerName1">Waiting for player 1</h4>
-			<p id="wins"><b>Wins: </b><span id="win-totals"></span></p>
-			<p id="losses"><b>Losses: </b><span id="loss-totals"></span></p>
+		<div class="container-fluid">
+			<form id="join">
+				<label>Enter a username:</label>
+				<input type="text" id="userName"/>
+				<button type="submit" id="submit">Submit</button>
+			</form>
+			<div class="row justify-content-center">
+				<h3>Hello, <span id="name"></span>. You are player <span id="playerNum"></span>.</h3>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="row justify-content-center">
+						<h4 id="playerName1">Waiting for player 1</h4>
+					</div>
+					<div class="row justify-content-center">
+						<div id="player1">
+							<p id="wins"><b>Wins: </b><span id="win-totals"></span></p>
+							<p id="losses"><b>Losses: </b><span id="loss-totals"></span></p>
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div id="results"></div>
+				</div>
+				<div class="col">
+					<div class="row justify-content-center">
+						<h4 id="playerName2">Waiting for player 2</h4>
+					</div>
+					<div class="row justify-content-center">
+						<div id="player2">
+							<p id="wins"><b>Wins: </b><span id="win-totals"></span></p>
+							<p id="losses"><b>Losses: </b><span id="loss-totals"></span></p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div id="results"></div>
-		<div id="player2">
-			<h4 id="playerName2">Waiting for player 2</h4>
-			<p id="wins"><b>Wins: </b><span id="win-totals"></span></p>
-			<p id="losses"><b>Losses: </b><span id="loss-totals"></span></p>
-		</div>
-
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$("#submit").on("click", logIn);
