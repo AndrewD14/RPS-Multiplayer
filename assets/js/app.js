@@ -18,6 +18,7 @@ var playerCount = 0;
 var userName = "";
 var disconnetRef = "";
 var activeOtherPlayerNum = 0;
+var waitForNextRound;
 
 //event trigger for when new child is added to users
 database.ref("/users").on("child_added", function(snapshot){
@@ -51,6 +52,35 @@ database.ref("/users").on("child_added", function(snapshot){
 		else
 			database.ref("turn").set(1);
 	});
+})
+
+//event trigger for when new child is removed from users
+database.ref("/users").on("child_removed", function(snapshot){
+	console.log(snapshot.val())
+	//clears the results
+	$("#results").empty();
+
+	//resets the turn to not enough players
+	database.ref("turn").set(-1);
+
+	//clears the timer that has results display for a bit
+	clearTimeout(waitForNextRound);
+
+	//clears leaving player
+	if(snapshot.val().player == 1){
+		$("#player1 .choice").remove();
+
+		$("#playerName1").html("Waiting for player 1");
+		$("#player1 #wins #win-totals").html("");
+		$("#player1 #losses #loss-totals").html("");
+	}
+	else if(snapshot.val().player == 2){
+		$("#player2 .choice").remove();
+
+		$("#playerName2").html("Waiting for player 2");
+		$("#player2 #wins #win-totals").html("");
+		$("#player2 #losses #loss-totals").html("");
+	}
 })
 
 //create user in firebase
@@ -295,7 +325,7 @@ function determineWinner(p1, p2){
 	database.ref("/users/"+p2.key+"/choice").set("");
 
 	//sets the timer to let results stay for a bit
-	setTimeout(function(){
+	waitForNextRound = setTimeout(function(){
 			database.ref("turn").set(1);
 		},
 		4000);
