@@ -205,6 +205,7 @@ database.ref("turn").on("value", function(snapshot){
 	$("#results").empty();
 	if(snapshot.val() == 1){
 		$("#results").html("Waiting on player 1.");
+		$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h5>Waiting for player 1</h5></div></div>');
 
 		//activates the player 1's buttons
 		database.ref("/users/"+player).once("value", function(snapshot2){
@@ -213,7 +214,7 @@ database.ref("turn").on("value", function(snapshot){
 		});
 	}
 	else if(snapshot.val() == 2){
-		$("#results").html("Waiting on player 2.");
+		$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h5>Waiting for player 2</h5></div></div>');
 
 		//activates the player 2's buttons
 		database.ref("/users/"+player).once("value", function(snapshot2){
