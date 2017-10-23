@@ -160,6 +160,10 @@ function displayCurrentPlayer(){
 		scissor.attr("data", "scissor");
 		scissor.addClass("choice");
 
+		//makes sures both sides are cleared
+		$("#player1 .choice, #choice").remove();
+		$("#player2 .choice, #choice").remove();
+
 		if(playerNum == 1){
 			$("#player1").prepend(scissor);
 			$("#player1").prepend(paper);
@@ -178,7 +182,7 @@ function selectChoice(){
 	var option = $(this).attr("data");
 	database.ref("/users/"+player+"/choice").set(option);
 
-	$(".choice").unbind("click");
+	$(document.body).unbind("click", ".choices");
 
 	database.ref("/users/"+player).once("value", function(snapshot){
 		if(snapshot.val().player == 1){
@@ -198,7 +202,7 @@ database.ref("turn").on("value", function(snapshot){
 		//activates the player 1's buttons
 		database.ref("/users/"+player).once("value", function(snapshot2){
 			if(snapshot2.child("player").exists() && snapshot2.val().player == 1)
-				$(".choice").on("click", selectChoice);
+				$(document.body).on("click", ".choice", selectChoice);
 		});
 	}
 	else if(snapshot.val() == 2){
@@ -207,7 +211,7 @@ database.ref("turn").on("value", function(snapshot){
 		//activates the player 2's buttons
 		database.ref("/users/"+player).once("value", function(snapshot2){
 			if(snapshot2.child("player").exists() && snapshot2.val().player == 2)
-				$(".choice").on("click", selectChoice);
+				$(document.body).on("click", ".choice", selectChoice);
 		});
 	}
 	else if(snapshot.val() == 0){
@@ -246,6 +250,22 @@ function determineResults(){
 
 //determines the winner
 function determineWinner(p1, p2){
+	//clears the choices
+	$("#player1 .choice, #choice").remove();
+	$("#player2 .choice, #choice").remove();
+
+	//displays what was picked
+	var picked = $("<h5>");
+	picked.attr("id", "choice");
+	picked.html(p1.choice);
+	$("#player1").prepend(picked);
+
+	var picked2 = $("<h5>");
+	picked2.attr("id", "choice");
+	picked2.html(p2.choice);
+	$("#player2").prepend(picked2)
+
+
 	if(p1.choice === "rock"){
 		if(p2.choice === "paper"){
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
@@ -329,6 +349,7 @@ function determineWinner(p1, p2){
 	//sets the timer to let results stay for a bit
 	waitForNextRound = setTimeout(function(){
 			database.ref("turn").set(1);
+			displayCurrentPlayer();
 		},
 		4000);
 }
