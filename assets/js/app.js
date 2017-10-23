@@ -37,16 +37,19 @@ database.ref("/users").on("child_added", function(snapshot){
 					$("#playerName1").html(snapshot3.val().userName);
 					$("#player1 #wins #win-totals").html(wins);
 					$("#player1 #losses #loss-totals").html(losses);
-					database.ref("turn").set(-1);
 				}
 				else if(activeOtherPlayerNum == 2){
 					$("#playerName2").html(snapshot3.val().userName);
 					$("#player2 #wins #win-totals").html(wins);
 					$("#player2 #losses #loss-totals").html(losses);
-					database.ref("turn").set(1);
 				}
 			});
 		}
+
+		if(playerCount < 2)
+			database.ref("turn").set(-1);
+		else
+			database.ref("turn").set(1);
 	});
 })
 
@@ -156,8 +159,9 @@ function selectChoice(){
 	});
 }
 
-//event trigger for when child is updated
+//event trigger for when turn is updated
 database.ref("turn").on("value", function(snapshot){
+	$("#results").empty();
 	if(snapshot.val() == 1){
 		$("#results").html("Waiting on player 1.");
 
@@ -177,31 +181,42 @@ database.ref("turn").on("value", function(snapshot){
 		});
 	}
 	else if(snapshot.val() == 0){
-		//determineResults();
-		null;
+		determineResults();
 	}
 })
 
 //function to update results
 function determineResults(){
-	var p1Choice = "";
-	var p2Choice = "";
+	var p1 = {key: "", choice: ""};
+	var p2 = {key: "", choice: ""};
 
 	$("#results").empty();
 
 	//grabs the 2 player's choices
 	database.ref("/users").once("value", function(snapshot){
-		for(i in snapshot2.val()){
+		for(i in snapshot.val()){
+			console.log(i)
 			database.ref("/users/"+i).once("value").then(function(snapshot2){
-				if(snapshot2.val().player == 1)
-					p1Choice = snapshot2.val().choice;
-				else
-					p2Choice = snapshot2.val().choice;
+				if(snapshot2.val().player == 1){
+					p1.choice = snapshot2.val().choice;
+					p1.key = snapshot2.ref.key;
+				}
+				else{
+					p2.choice = snapshot2.val().choice;
+					p2.key = snapshot2.ref.key;
+				}
 
+				if(p1.key != "" && p2.key != "")
+					determineWinner(p1, p2);
 			});
 		}
 	});
+}
 
+//determines the winner
+function determineWinner(p1, p2){
+	console.log(p1.key)
+	console.log(p2.key)
 	if(p1.choice === "rock"){
 		if(p2.choice === "paper"){
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
@@ -266,7 +281,13 @@ function determineResults(){
 		}
 	}//player 1 chose scissor
 
-		//clears the selected choice
-		//database.ref("/users/"+p1.key+"/choice").set("");
-		//database.ref("/users/"+p2.key+"/choice").set("");
+	//clears the selected choice
+	database.ref("/users/"+p1.key+"/choice").set("");
+	database.ref("/users/"+p2.key+"/choice").set("");
+
+	//sets the timer to let results stay for a bit
+	setTimeout(function(){
+			database.ref("turn").set(1);
+		},
+		4000);
 }
