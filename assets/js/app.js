@@ -48,9 +48,9 @@ database.ref("/users").on("child_added", function(snapshot){
 		}
 
 		if(playerCount < 2)
-			database.ref("turn").set(-1);
+			database.ref("turn").set(-1); //not enough players
 		else
-			database.ref("turn").set(1);
+			database.ref("turn").set(1); //2 players have joined, set turn to player 1
 	});
 })
 
@@ -217,8 +217,8 @@ database.ref("turn").on("value", function(snapshot){
 
 //function to update results
 function determineResults(){
-	var p1 = {key: "", choice: ""};
-	var p2 = {key: "", choice: ""};
+	var p1 = {key: "", choice: "", name: ""};
+	var p2 = {key: "", choice: "", name: ""};
 
 	$("#results").empty();
 
@@ -229,10 +229,12 @@ function determineResults(){
 				if(snapshot2.val().player == 1){
 					p1.choice = snapshot2.val().choice;
 					p1.key = snapshot2.ref.key;
+					p1.name = snapshot2.val().userName;
 				}
 				else{
 					p2.choice = snapshot2.val().choice;
 					p2.key = snapshot2.ref.key;
+					p2.name = snapshot2.val().userName;
 				}
 
 				if(p1.key != "" && p2.key != "")
@@ -253,7 +255,7 @@ function determineWinner(p1, p2){
 
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/wins").set(snapshot.val().wins+1);
-				updateWins(2, snapshot.val().wins+1);
+				updateWins(2, snapshot.val().wins+1, p2.name);
 			});
 		}
 
@@ -265,7 +267,7 @@ function determineWinner(p1, p2){
 
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/wins").set(snapshot.val().wins+1);
-				updateWins(1, snapshot.val().wins+1);
+				updateWins(1, snapshot.val().wins+1, p1.name);
 			});
 		}
 	}//player 1 chose rock
@@ -278,7 +280,7 @@ function determineWinner(p1, p2){
 
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/wins").set(snapshot.val().wins+1);
-				updateWins(2, snapshot.val().wins+1);
+				updateWins(2, snapshot.val().wins+1, p2.name);
 			});
 		}
 
@@ -290,7 +292,7 @@ function determineWinner(p1, p2){
 
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/wins").set(snapshot.val().wins+1);
-				updateWins(1, snapshot.val().wins+1);
+				updateWins(1, snapshot.val().wins+1, p1.name);
 			});
 		}
 	}//player 1 chose paper
@@ -303,7 +305,7 @@ function determineWinner(p1, p2){
 
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/wins").set(snapshot.val().wins+1);
-				updateWins(2, snapshot.val().wins+1);
+				updateWins(2, snapshot.val().wins+1, p2.name);
 			});
 		}
 
@@ -315,7 +317,7 @@ function determineWinner(p1, p2){
 
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/wins").set(snapshot.val().wins+1);
-				updateWins(1, snapshot.val().wins+1);
+				updateWins(1, snapshot.val().wins+1, p1.name);
 			});
 		}
 	}//player 1 chose scissor
@@ -332,8 +334,11 @@ function determineWinner(p1, p2){
 }
 
 //update the html with the new win totals
-function updateWins(player, total){
+function updateWins(player, total, name){
 	$("#player"+player+" #wins #win-totals").html(total);
+
+	//shows the winner in the results
+	$("#results").html("<h4>"+name+"</h4><h4>WINS!</h4>");
 }
 
 
