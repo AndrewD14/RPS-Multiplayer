@@ -4,6 +4,11 @@ body {
     background-repeat: no-repeat;
     min-height: 100vh;
 }
+
+#join {
+	background-color: skyblue;
+}
+
 #greeting {
 	display: none;
 	background: rgba(166, 38, 166, 0.3);
