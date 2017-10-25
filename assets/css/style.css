@@ -2,6 +2,10 @@
 	display: none;
 }
 
+#playerInfo {
+	text-align: center;
+}
+
 #player1 p{
 	margin-left: 10px;
 	margin-right: 10px;

@@ -57,7 +57,6 @@ database.ref("/users").on("child_added", function(snapshot){
 
 //event trigger for when new child is removed from users
 database.ref("/users").on("child_removed", function(snapshot){
-	console.log(snapshot.val())
 	//clears the results
 	$("#results").empty();
 
@@ -148,9 +147,16 @@ function addUser(name){
 	player = key.key;
 
 	//disconnect event
-	if(player != ""){
+	if(player != "" && player != null){
 		disconnetRef = database.ref("/users/"+player).onDisconnect().remove();
 		displayCurrentPlayer();
+		$("#greeting").css("display", "flex");
+	}
+	//displays the watcher greeting
+	else{
+		$("#name").html(userName);
+		$("#playerNum").html("a spectator");
+		$("#greeting").append($("<p>").html("You are only allowed to send messages. Please refresh the page when a player leaves to login to the game."));
 		$("#greeting").css("display", "flex");
 	}
 }
@@ -179,7 +185,7 @@ function displayCurrentPlayer(){
 		$("#name").html(playerName);
 		
 		playerNum = snapshot2.val().player;
-		$("#playerNum").html(playerNum);
+		$("#playerNum").html("player "+playerNum);
 
 		var rock = $("<button>");
 		rock.html("Rock");
