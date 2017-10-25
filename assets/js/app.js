@@ -50,8 +50,10 @@ database.ref("/users").on("child_added", function(snapshot){
 
 		if(playerCount < 2)
 			database.ref("turn").set(-1); //not enough players
-		else
+		else{
 			database.ref("turn").set(1); //2 players have joined, set turn to player 1
+			displayCurrentPlayer();
+		}
 	});
 })
 
@@ -66,17 +68,16 @@ database.ref("/users").on("child_removed", function(snapshot){
 	//clears the timer that has results display for a bit
 	clearTimeout(waitForNextRound);
 
+	$("#player1 #choice").remove();
+	$("#player2 #choice").remove();
+
 	//clears leaving player
 	if(snapshot.val().player == 1){
-		$("#player1 .choice").remove();
-
 		$("#playerName1").html("Waiting for player 1");
 		$("#player1 #wins #win-totals").html("");
 		$("#player1 #losses #loss-totals").html("");
 	}
 	else if(snapshot.val().player == 2){
-		$("#player2 .choice").remove();
-
 		$("#playerName2").html("Waiting for player 2");
 		$("#player2 #wins #win-totals").html("");
 		$("#player2 #losses #loss-totals").html("");
@@ -309,7 +310,7 @@ function determineWinner(p1, p2){
 	$("#player1").prepend(picked);
 
 	//displays what was picked for player 2
-	var picked2 = $("<h5>");
+	var picked2 = $("<img>");
 	picked2.attr("id", "choice");
 	$("#player2").prepend(picked2)
 
