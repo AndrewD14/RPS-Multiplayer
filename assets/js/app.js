@@ -68,8 +68,9 @@ database.ref("/users").on("child_removed", function(snapshot){
 	//clears the timer that has results display for a bit
 	clearTimeout(waitForNextRound);
 
-	$("#player1 #choice").remove();
-	$("#player2 #choice").remove();
+	//clears the players panel
+	$("#player1 .choice").remove();
+	$("#player2 .choice").remove();
 
 	//clears leaving player
 	if(snapshot.val().player == 1){
@@ -182,48 +183,54 @@ function logIn(){
 function displayCurrentPlayer(){
 	var playerNum;
 	var playerName;
+
+	//makes sures both sides are cleared
+	$("#player1 .choice").remove();
+	$("#player2 .choice").remove();
+
 	database.ref("/users/"+player).once("value").then(function(snapshot2){
-		playerName = snapshot2.val().userName;
-		$("#name").html(playerName);
-		
-		playerNum = snapshot2.val().player;
-		$("#playerNum").html("player "+playerNum);
+		//checks to make sure the current logged in user is a player
+		if(snapshot2.child("player").exists()){
+			playerName = snapshot2.val().userName;
+			$("#name").html(playerName);
+			
+			playerNum = snapshot2.val().player;
+			$("#playerNum").html("player "+playerNum);
 
-		var rock = $("<button>");
-		rock.html("Rock");
-		rock.attr("data", "rock");
-		rock.addClass("choice");
-		rock.addClass("alert alert-info");
-		rock.addClass("btn-block");
+			var rock = $("<button>");
+			rock.html("Rock");
+			rock.attr("data", "rock");
+			rock.addClass("choice");
+			rock.addClass("alert alert-info");
+			rock.addClass("btn-block");
 
-		var paper = $("<button>");
-		paper.html("Paper");
-		paper.attr("data", "paper");
-		paper.addClass("choice");
-		paper.addClass("alert alert-info");
-		paper.addClass("btn-block");
+			var paper = $("<button>");
+			paper.html("Paper");
+			paper.attr("data", "paper");
+			paper.addClass("choice");
+			paper.addClass("alert alert-info");
+			paper.addClass("btn-block");
 
-		var scissor = $("<button>");
-		scissor.html("Scissors");
-		scissor.attr("data", "scissor");
-		scissor.addClass("choice");
-		scissor.addClass("alert alert-info");
-		scissor.addClass("btn-block");
+			var scissor = $("<button>");
+			scissor.html("Scissors");
+			scissor.attr("data", "scissor");
+			scissor.addClass("choice");
+			scissor.addClass("alert alert-info");
+			scissor.addClass("btn-block");
 
-		//makes sures both sides are cleared
-		$("#player1 .choice").remove();
-		$("#player2 .choice").remove();
+			
 
-		if(playerNum == 1){
-			$("#player1").prepend(scissor);
-			$("#player1").prepend(paper);
-			$("#player1").prepend(rock);
-		}
-		else if(playerNum == 2){
-			$("#player2").prepend(scissor);
-			$("#player2").prepend(paper);
-			$("#player2").prepend(rock);
-		}
+			if(playerNum == 1){
+				$("#player1").prepend(scissor);
+				$("#player1").prepend(paper);
+				$("#player1").prepend(rock);
+			}
+			else if(playerNum == 2){
+				$("#player2").prepend(scissor);
+				$("#player2").prepend(paper);
+				$("#player2").prepend(rock);
+			}
+		}//end of check for user being a player
 	});
 }
 
