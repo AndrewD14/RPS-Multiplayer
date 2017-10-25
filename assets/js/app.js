@@ -105,8 +105,9 @@ database.ref("/message").on("child_changed", function(snapshot){
 	$("#message-box").empty();
 
 	for(i in messages){
+		var timePosted = new Date(messages[i].time);
 		var p = $("<p>");
-		p.html(messages[i].time+" "+messages[i].m);
+		p.html(timePosted.toLocaleString()+" "+messages[i].m);
 
 		$("#message-box").append(p);
 	}
@@ -303,21 +304,21 @@ function determineWinner(p1, p2){
 	$("#player2 .choice, #choice").remove();
 
 	//displays what was picked for player 1
-	var picked = $("<h5>");
+	var picked = $("<img>");
 	picked.attr("id", "choice");
-	picked.html(p1.choice);
 	$("#player1").prepend(picked);
 
 	//displays what was picked for player 2
 	var picked2 = $("<h5>");
 	picked2.attr("id", "choice");
-	picked2.html(p2.choice);
 	$("#player2").prepend(picked2)
 
 
 	//figures out who is the winner and loser
 	if(p1.choice === "rock"){
+		picked.attr("src", "assets/images/rock.png");
 		if(p2.choice === "paper"){
+			picked2.attr("src", "assets/images/paper.png");
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/losses").set(snapshot.val().losses+1);
 				updateLosses(1, snapshot.val().losses+1);
@@ -329,6 +330,7 @@ function determineWinner(p1, p2){
 			});
 		}
 		else if(p2.choice === "scissor"){
+			picked2.attr("src", "assets/images/scissors.png");
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/losses").set(snapshot.val().losses+1);
 				updateLosses(2, snapshot.val().losses+1);
@@ -341,11 +343,14 @@ function determineWinner(p1, p2){
 		}
 		//tie
 		else{
+			picked2.attr("src", "assets/images/rock.png");
 			$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h3>TIE!</h3></div></div>');
 		}
 	}//player 1 chose rock
 	else if(p1.choice === "paper"){
+		picked.attr("src", "assets/images/paper.png");
 		if(p2.choice === "scissor"){
+			picked2.attr("src", "assets/images/scissors.png");
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/losses").set(snapshot.val().losses+1);
 				updateLosses(1, snapshot.val().losses+1);
@@ -357,6 +362,7 @@ function determineWinner(p1, p2){
 			});
 		}
 		else if(p2.choice === "rock"){
+			picked2.attr("src", "assets/images/rock.png");
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/losses").set(snapshot.val().losses+1);
 				updateLosses(2, snapshot.val().losses+1);
@@ -369,11 +375,14 @@ function determineWinner(p1, p2){
 		}
 		//tie
 		else{
+			picked2.attr("src", "assets/images/paper.png");
 			$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h3>TIE!</h3></div></div>');
 		}
 	}//player 1 chose paper
 	else if(p1.choice === "scissor"){
+		picked.attr("src", "assets/images/scissors.png");
 		if(p2.choice === "rock"){
+			picked2.attr("src", "assets/images/rock.png");
 			database.ref("/users/"+p1.key).once("value", function(snapshot){
 				database.ref("/users/"+p1.key+"/losses").set(snapshot.val().losses+1);
 				updateLosses(1, snapshot.val().losses+1);
@@ -384,8 +393,8 @@ function determineWinner(p1, p2){
 				updateWins(2, snapshot.val().wins+1, p2.name);
 			});
 		}
-		else
-			if(p2.choice === "paper"){
+		else if(p2.choice === "paper"){
+			picked2.attr("src", "assets/images/paper.png");
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/losses").set(snapshot.val().losses+1);
 				updateLosses(2, snapshot.val().losses+1);
@@ -398,6 +407,7 @@ function determineWinner(p1, p2){
 		}
 		//tie
 		else{
+			picked2.attr("src", "assets/images/scissors.png");
 			$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h3>TIE!</h3></div></div>');
 		}
 	}//player 1 chose scissor

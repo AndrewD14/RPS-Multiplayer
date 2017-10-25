@@ -33,6 +33,11 @@ body {
 	margin-bottom: 0;
 }
 
+#choice {
+	height: 250px;
+	width: 150px;
+}
+
 #results {
 	background: rgba(175, 20, 20, 0.3);
 }
