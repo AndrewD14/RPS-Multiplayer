@@ -13,10 +13,12 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 //global variables
+var userName = "";
 var player = "";
 var playerCount = 0;
 var disconnetRef = "";
 var activeOtherPlayerNum = 0;
+var messages = [];
 var waitForNextRound;
 
 //event trigger for when new child is added to users
@@ -82,6 +84,37 @@ database.ref("/users").on("child_removed", function(snapshot){
 	}
 })
 
+//gets the current messages when the page loads
+database.ref("/message").on("child_added", function(snapshot){
+	messages = snapshot.val();
+
+	for(i in messages){
+		var timePosted = new Date(messages[i].time);
+		var p = $("<p>");
+		p.html(timePosted.toLocaleString()+" "+messages[i].m);
+
+		$("#message-box").append(p);
+	}
+
+	$("#message-box").scrollTop($("#message-box")[0].scrollHeight);
+})
+
+//event trigger for when messages is updated
+database.ref("/message").on("child_changed", function(snapshot){
+	messages = snapshot.val();
+
+	$("#message-box").empty();
+
+	for(i in messages){
+		var p = $("<p>");
+		p.html(messages[i].time+" "+messages[i].m);
+
+		$("#message-box").append(p);
+	}
+
+	$("#message-box").scrollTop($("#message-box")[0].scrollHeight);
+})
+
 //create user in firebase
 function addUser(name){
 	var users = database.ref("/users");
@@ -127,8 +160,11 @@ function logIn(){
 	// prevent form from submitting with event.preventDefault() or returning false
 	event.preventDefault();
 
-	var userName = $("#userName").val().trim();
+	userName = $("#userName").val().trim();
 	addUser(userName);
+
+	//activates the submit button for the message
+	$("#post-message").on("click", postMessage);
 
 	//removes the log in form
 	$("#join").remove();
@@ -286,8 +322,7 @@ function determineWinner(p1, p2){
 				updateWins(2, snapshot.val().wins+1, p2.name);
 			});
 		}
-
-		if(p2.choice === "scissor"){
+		else if(p2.choice === "scissor"){
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/losses").set(snapshot.val().losses+1);
 				updateLosses(2, snapshot.val().losses+1);
@@ -297,6 +332,10 @@ function determineWinner(p1, p2){
 				database.ref("/users/"+p1.key+"/wins").set(snapshot.val().wins+1);
 				updateWins(1, snapshot.val().wins+1, p1.name);
 			});
+		}
+		//tie
+		else{
+			$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h3>TIE!</h3></div></div>');
 		}
 	}//player 1 chose rock
 	else if(p1.choice === "paper"){
@@ -311,8 +350,7 @@ function determineWinner(p1, p2){
 				updateWins(2, snapshot.val().wins+1, p2.name);
 			});
 		}
-
-		if(p2.choice === "rock"){
+		else if(p2.choice === "rock"){
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/losses").set(snapshot.val().losses+1);
 				updateLosses(2, snapshot.val().losses+1);
@@ -322,6 +360,10 @@ function determineWinner(p1, p2){
 				database.ref("/users/"+p1.key+"/wins").set(snapshot.val().wins+1);
 				updateWins(1, snapshot.val().wins+1, p1.name);
 			});
+		}
+		//tie
+		else{
+			$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h3>TIE!</h3></div></div>');
 		}
 	}//player 1 chose paper
 	else if(p1.choice === "scissor"){
@@ -336,8 +378,8 @@ function determineWinner(p1, p2){
 				updateWins(2, snapshot.val().wins+1, p2.name);
 			});
 		}
-
-		if(p2.choice === "paper"){
+		else
+			if(p2.choice === "paper"){
 			database.ref("/users/"+p2.key).once("value", function(snapshot){
 				database.ref("/users/"+p2.key+"/losses").set(snapshot.val().losses+1);
 				updateLosses(2, snapshot.val().losses+1);
@@ -347,6 +389,10 @@ function determineWinner(p1, p2){
 				database.ref("/users/"+p1.key+"/wins").set(snapshot.val().wins+1);
 				updateWins(1, snapshot.val().wins+1, p1.name);
 			});
+		}
+		//tie
+		else{
+			$("#results").html('<div class="col my-auto"><div class="row justify-content-center"><h3>TIE!</h3></div></div>');
 		}
 	}//player 1 chose scissor
 
@@ -373,4 +419,29 @@ function updateWins(player, total, name){
 //update the html with the new loss totals
 function updateLosses(player, total){
 	$("#player"+player+" #losses #loss-totals").html(total);
+}
+
+//function to submit to the message box
+function postMessage(){
+	var message = $("#message-input").val().trim();
+	var currentTime = new Date();
+
+	//removes the first message if beyond max allowed
+	if(messages.length == 25){
+		messages.splice(0, 1);
+	}
+	else if(messages.length > 25){
+		messages.splice(0, (messages.length - 24));
+	}
+
+	//adds the new message to the array
+	messages.push({
+		m: userName+": "+message,
+		time: currentTime.getTime()});
+
+	//overites the message array with the new one
+	database.ref("/message").set({messages});
+
+	//clears the input box
+	$("#message-input").val("");
 }

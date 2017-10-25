@@ -16,7 +16,13 @@
 
 #message-box {
 	background-color: white;
-	height: 5em;
+	height: 15em;
+	overflow: scroll;
+}
+
+#message-box p{
+	margin: 0;
+	padding: 0;
 }
 
 .message {
